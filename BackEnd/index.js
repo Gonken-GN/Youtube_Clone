@@ -10,6 +10,7 @@ import express from 'express';
 import * as dotenv from 'dotenv';
 import bodyParser from 'body-parser';
 import mongoose from 'mongoose';
+import authRouter from './routes/auth.routes.js';
 
 const init = () => {
   // setting up the server
@@ -18,7 +19,7 @@ const init = () => {
   server.use(bodyParser.urlencoded({ limit: '10mb', extended: true }));
 
   // register the routes
-
+  server.use('/auth', authRouter);
   // get env from .env file
   dotenv.config();
   // get port from .env
