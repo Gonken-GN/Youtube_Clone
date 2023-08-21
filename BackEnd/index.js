@@ -9,17 +9,22 @@
 import express from 'express';
 import * as dotenv from 'dotenv';
 import bodyParser from 'body-parser';
+import cookieParser from 'cookie-parser';
 import mongoose from 'mongoose';
+
 import authRouter from './routes/auth.routes.js';
+import userRouter from './routes/user.routes.js';
 
 const init = () => {
   // setting up the server
   const server = express();
+  server.use(cookieParser());
   server.use(bodyParser.json({ limit: '10mb', extended: true }));
   server.use(bodyParser.urlencoded({ limit: '10mb', extended: true }));
 
   // register the routes
   server.use('/auth', authRouter);
+  server.use('/users', userRouter);
   // get env from .env file
   dotenv.config();
   // get port from .env

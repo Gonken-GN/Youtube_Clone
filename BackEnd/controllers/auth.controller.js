@@ -47,7 +47,7 @@ export const signIn = async (
   try {
     const user = await User.findOne({ name });
     if (!user) {
-      const response = res.status(500).json({
+      const response = res.status(401).json({
         status: 'fail',
         message: 'User not found',
       });
@@ -62,6 +62,16 @@ export const signIn = async (
       return response;
     }
     const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET);
+
+    const { passwords, ...others } = user._doc;
+    res.cookie('access_token', token, {
+      httpOnly: true,
+    });
+    const response = res.status(200).json({
+      status: 'success',
+      data: { others, token },
+    });
+    return response;
   } catch (err) {
     const response = res.status(500).json({
       status: 'fail',
