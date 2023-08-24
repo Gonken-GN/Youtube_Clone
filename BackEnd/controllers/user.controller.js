@@ -8,7 +8,7 @@
 import User from '../models/User.js';
 
 export const updateUser = async (
-  /* @t* ype import('express').Request */ req,
+  /* @type import('express').Request */ req,
   /** @type import('express').Response */ res,
 ) => {
   const { id } = req.params;
@@ -23,8 +23,8 @@ export const updateUser = async (
       });
       return response;
     } catch (error) {
-      const response = res.status(200).json({
-        status: 'success',
+      const response = res.status(400).json({
+        status: 'fail',
         message: error.message,
       });
       return response;
@@ -37,3 +37,60 @@ export const updateUser = async (
     return response;
   }
 };
+
+export const deleteUser = async (
+  /* @type import('express').Request */ req,
+  /** @type import('express').Response */ res,
+) => {
+  const { id } = req.params;
+  if (id === req.user.id) {
+    try {
+      await User.findByIdAndDelete(id);
+      const response = res.status(200).json({
+        status: 'success',
+        message: 'User deleted successfully',
+      });
+      return response;
+    } catch (error) {
+      const response = res.status(400).json({
+        status: 'fail',
+        message: error.message,
+      });
+      return response;
+    }
+  } else {
+    const response = res.status(403).json({
+      status: 'fail',
+      message: 'You can only delete on your account',
+    });
+    return response;
+  }
+};
+
+export const getUser = async (
+  /* @type import('express').Request */ req,
+  /** @type import('express').Response */ res,
+) => {
+  const { id } = req.params;
+  try {
+    const user = await User.findById(id);
+    if (!user) {
+      const response = res.status(401).json({
+        status: 'fail',
+        message: 'User not found',
+      });
+      return response;
+    }
+    const response = res.status(200).json({
+      status: 'success',
+      data: user,
+    });
+    return response;
+  } catch (error) {
+    const response = res.status(400).json({
+      status: 'fail',
+      message: error.message,
+    });
+    return response;
+  }
+}
