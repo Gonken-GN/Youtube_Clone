@@ -93,4 +93,72 @@ export const getUser = async (
     });
     return response;
   }
-}
+};
+
+export const subscribe = async (
+  /* @type import('express').Request */ req,
+  /** @type import('express').Response */ res,
+) => {
+  const { id } = req.params;
+  try {
+    const user = await User.findById(req.user.id, {
+      $push: { subscribedUsers: id },
+    });
+    const subscribedUsers = await User.findByIdAndUpdate(id, {
+      $inc: { subscribers: 1 },
+    });
+    const response = res.status(200).json({
+      status: 'success',
+      message: 'Subscribed successfully',
+      data: { user, subscribedUsers },
+    });
+    return response;
+  } catch (error) {
+    const response = res.status(400).json({
+      status: 'success',
+      message: error.message,
+    });
+    return response;
+  }
+};
+
+export const unSubscribe = async (
+  /* @type import('express').Request */ req,
+  /** @type import('express').Response */ res,
+) => {
+  const { id } = req.params;
+  try {
+    const user = await User.findById(req.user.id, {
+      $pull: { subscribedUsers: id },
+    });
+    const subscribedUsers = await User.findByIdAndUpdate(id, {
+      $inc: { subscribers: -1 },
+    });
+    const response = res.status(200).json({
+      status: 'success',
+      message: 'Unsubscribed successfully',
+      data: { user, subscribedUsers },
+    });
+    return response;
+  } catch (error) {
+    const response = res.status(400).json({
+      status: 'success',
+      message: error.message,
+    });
+    return response;
+  }
+};
+
+export const likeVideo = async (
+  /* @type import('express').Request */ req,
+  /** @type import('express').Response */ res,
+) => {
+
+};
+
+export const dislikeVideo = async (
+  /* @type import('express').Request */ req,
+  /** @type import('express').Response */ res,
+) => {
+
+};
