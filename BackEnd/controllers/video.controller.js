@@ -43,7 +43,11 @@ export const updateVideo = async (
       return response;
     }
   } catch (error) {
-
+    const response = res.status(400).json({
+      status: 'fail',
+      message: error.message,
+    });
+    return response;
   }
 };
 

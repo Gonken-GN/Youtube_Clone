@@ -95,6 +95,33 @@ export const getUser = async (
   }
 };
 
+export const getAllUser = async (
+  /* @type import('express').Request */ req,
+  /** @type import('express').Response */ res,
+) => {
+  try {
+    const user = await User.find();
+    if (!user) {
+      const response = res.status(401).json({
+        status: 'fail',
+        message: 'User not found',
+      });
+      return response;
+    }
+    const response = res.status(200).json({
+      status: 'success',
+      data: user,
+    });
+    return response;
+  } catch (error) {
+    const response = res.status(400).json({
+      status: 'fail',
+      message: error.message,
+    });
+    return response;
+  }
+};
+
 export const subscribe = async (
   /* @type import('express').Request */ req,
   /** @type import('express').Response */ res,
