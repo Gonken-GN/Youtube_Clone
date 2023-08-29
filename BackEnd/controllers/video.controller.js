@@ -50,9 +50,13 @@ export const updateVideo = async (
       });
       return response;
     }
-    const updatedVideo = await Video.findByIdAndUpdate(id, {
-      $set: req.body,
-    }, { new: true });
+    const updatedVideo = await Video.findByIdAndUpdate(
+      id,
+      {
+        $set: req.body,
+      },
+      { new: true },
+    );
     const response = res.status(200).json({
       status: 'success',
       data: updatedVideo,
@@ -145,9 +149,13 @@ export const addView = async (
       });
       return response;
     }
-    const updatedVideo = await Video.findByIdAndUpdate(id, {
-      $inc: { views: 1 },
-    }, { new: true });
+    const updatedVideo = await Video.findByIdAndUpdate(
+      id,
+      {
+        $inc: { views: 1 },
+      },
+      { new: true },
+    );
     const response = res.status(200).json({
       status: 'success',
       data: updatedVideo,
@@ -208,7 +216,9 @@ export const subscribedVideo = async (
   try {
     const user = await User.findById(req.user.id);
     const subscribedChannel = user.subscribedUsers;
-    const list = await Promise.all(subscribedChannel.map((channelId) => (Video.find({ userId: channelId }))));
+    const list = await Promise.all(
+      subscribedChannel.map((channelId) => Video.find({ userId: channelId })),
+    );
     const response = res.status(200).json({
       status: 'success',
       data: list.flat().sort((a, b) => b.createdAt - a.createdAt),
@@ -216,7 +226,49 @@ export const subscribedVideo = async (
     return response;
   } catch (error) {
     const response = res.status(400).json({
+      status: 'fail',
+      message: error.message,
+    });
+    return response;
+  }
+};
+
+export const searchVideo = async (
+  /* @type import('express').Request */ req,
+  /** @type import('express').Response */ res,
+) => {
+  const query = req.query.q;
+  try {
+    const videos = await Video.find({ title: { $regex: query, $options: 'i' } }).limit(40);
+    const response = res.status(200).json({
       status: 'success',
+      data: videos,
+    });
+    return response;
+  } catch (error) {
+    const response = res.status(400).json({
+      status: 'fail',
+      message: error.message,
+    });
+    return response;
+  }
+};
+
+export const tagsVideo = async (
+  /* @type import('express').Request */ req,
+  /** @type import('express').Response */ res,
+) => {
+  const tags = req.query.tags.split(',');
+  try {
+    const videos = await Video.find({ tags: { $in: tags } }).limit(20);
+    const response = res.status(200).json({
+      status: 'success',
+      data: videos,
+    });
+    return response;
+  } catch (error) {
+    const response = res.status(400).json({
+      status: 'fail',
       message: error.message,
     });
     return response;

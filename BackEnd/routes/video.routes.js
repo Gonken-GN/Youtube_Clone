@@ -8,7 +8,16 @@
 
 import express from 'express';
 import {
-  addVideo, addView, deleteVideo, getVideo, randomVideo, subscribedVideo, trendVideo, updateVideo,
+  addVideo,
+  addView,
+  deleteVideo,
+  getVideo,
+  randomVideo,
+  searchVideo,
+  subscribedVideo,
+  tagsVideo,
+  trendVideo,
+  updateVideo,
 } from '../controllers/video.controller.js';
 import { verifyToken } from '../middleware/verifyToken.js';
 
@@ -21,5 +30,7 @@ router.put('/view/:id', addView);
 router.get('/trend', trendVideo);
 router.get('/random', randomVideo);
 router.get('/subscribed', verifyToken, subscribedVideo);
+router.get('/tags', tagsVideo);
+router.get('/search', searchVideo);
 
 export default router;

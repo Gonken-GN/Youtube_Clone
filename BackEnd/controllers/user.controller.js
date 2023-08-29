@@ -142,7 +142,7 @@ export const subscribe = async (
     return response;
   } catch (error) {
     const response = res.status(400).json({
-      status: 'success',
+      status: 'fail',
       message: error.message,
     });
     return response;
@@ -169,7 +169,7 @@ export const unSubscribe = async (
     return response;
   } catch (error) {
     const response = res.status(400).json({
-      status: 'success',
+      status: 'fail',
       message: error.message,
     });
     return response;
