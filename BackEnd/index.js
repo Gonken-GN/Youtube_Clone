@@ -15,6 +15,7 @@ import mongoose from 'mongoose';
 import authRouter from './routes/auth.routes.js';
 import userRouter from './routes/user.routes.js';
 import videoRouter from './routes/video.routes.js';
+import commentRouter from './routes/comment.routes.js';
 
 const init = () => {
   // setting up the server
@@ -27,6 +28,7 @@ const init = () => {
   server.use('/auth', authRouter);
   server.use('/users', userRouter);
   server.use('/videos', videoRouter);
+  server.use('/comments', commentRouter);
   // get env from .env file
   dotenv.config();
   // get port from .env
