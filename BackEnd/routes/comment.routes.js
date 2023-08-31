@@ -13,6 +13,6 @@ import { verifyToken } from '../middleware/verifyToken.js';
 const router = express.Router();
 router.post('/', verifyToken, addComment);
 router.delete('/:id', verifyToken, deleteComment);
-router.get('/videoId', verifyToken, getComment);
+router.get('/:videoId', verifyToken, getComment);
 
 export default router;

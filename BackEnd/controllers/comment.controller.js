@@ -65,7 +65,7 @@ export const getComment = async (
 ) => {
   const { videoId } = req.params;
   try {
-    const comments = await Comment.findById(videoId);
+    const comments = await Comment.find({ videoId });
     const response = res.status(200).json({
       status: 'success',
       data: comments,
