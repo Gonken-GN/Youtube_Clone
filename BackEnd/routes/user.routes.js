@@ -19,7 +19,7 @@ router.get('/', getAllUser);
 router.get('/:id', getUser);
 router.put('/subscribe/:id', verifyToken, subscribe);
 router.put('/unsubscribe/:id', verifyToken, unSubscribe);
-router.put('/like/:id', verifyToken, likeVideo);
-router.put('/dislike/:id', verifyToken, dislikeVideo);
+router.put('/like/:videoId', verifyToken, likeVideo);
+router.put('/dislike/:videoId', verifyToken, dislikeVideo);
 
 export default router;

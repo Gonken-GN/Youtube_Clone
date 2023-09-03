@@ -6,6 +6,7 @@
  * Description: This is the code for running the servers
  * */
 import User from '../models/User.js';
+import Video from '../models/Video.js';
 
 export const updateUser = async (
   /* @type import('express').Request */ req,
@@ -160,12 +161,12 @@ export const unSubscribe = async (
     }, { new: true });
     const subscribedUsers = await User.findByIdAndUpdate(id, {
       $inc: { subscribers: -1 },
-    });
+    }, { new: true });
     const response = res.status(200).json({
       status: 'success',
       message: 'Unsubscribed successfully',
       data: { user, subscribedUsers },
-    }, { new: true });
+    });
     return response;
   } catch (error) {
     const response = res.status(400).json({
@@ -180,12 +181,50 @@ export const likeVideo = async (
   /* @type import('express').Request */ req,
   /** @type import('express').Response */ res,
 ) => {
-
+  const { id } = req.user;
+  const { videoId } = req.params;
+  try {
+    const likedVideo = await Video.findByIdAndUpdate(videoId, {
+      $addToSet: { likes: id },
+      $pull: { dislikes: id },
+    }, { new: true });
+    const response = res.status(200).json({
+      status: 'success',
+      message: 'Video has been liked',
+      data: likedVideo,
+    });
+    return response;
+  } catch (error) {
+    const response = res.status(400).json({
+      status: 'fail',
+      message: error.message,
+    });
+    return response;
+  }
 };
 
 export const dislikeVideo = async (
   /* @type import('express').Request */ req,
   /** @type import('express').Response */ res,
 ) => {
-
+  const { id } = req.user;
+  const { videoId } = req.params;
+  try {
+    const likedVideo = await Video.findByIdAndUpdate(videoId, {
+      $addToSet: { dislikes: id },
+      $pull: { likes: id },
+    }, { new: true });
+    const response = res.status(200).json({
+      status: 'success',
+      message: 'Video has been disliked',
+      data: likedVideo,
+    });
+    return response;
+  } catch (error) {
+    const response = res.status(400).json({
+      status: 'fail',
+      message: error.message,
+    });
+    return response;
+  }
 };
