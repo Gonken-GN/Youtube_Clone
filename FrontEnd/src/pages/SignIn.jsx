@@ -81,7 +81,7 @@ const SignIn = () => {
         password,
       };
       const res = await axios.post("http://localhost:5000/auth/signin", login);
-      dispatch(loginSuccess(res.data.data));
+      dispatch(loginSuccess(res.data));
     } catch (error) {
       dispatch(loginFailure());
     }
