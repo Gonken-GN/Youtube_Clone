@@ -5,7 +5,6 @@ import SearchOutlinedIcon from "@mui/icons-material/SearchOutlined";
 import { Link } from "react-router-dom";
 import { useSelector } from "react-redux";
 import VideoCallIcon from "@mui/icons-material/VideoCall";
-import { Avatar } from "@mui/material";
 import { current } from "@reduxjs/toolkit";
 
 const Container = styled.div`
@@ -66,12 +65,15 @@ const User = styled.div`
   color: ${({ theme }) => theme.text};
 `;
 
-const avatar = styled.image`
-  
+const Avatar = styled.img`
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background-color: #999;
 `;
 
 const Navbar = () => {
-  const { currentUSer } = useSelector((state) => state.user);
+  const { currentUser } = useSelector((state) => state.user);
   return (
     <Container>
       <Wrapper>
@@ -79,11 +81,11 @@ const Navbar = () => {
           <Input placeholder="Search" />
           <SearchOutlinedIcon />
         </Search>
-        {currentUSer ? (
+        {currentUser ? (
           <User>
             <VideoCallIcon />
-            <Avatar />
-            {currentUSer.name}
+            <Avatar src={currentUser.data.img} />
+              {currentUser.data.name}
           </User>
         ) : (
           <Link to="signin" style={{ textDecoration: "none" }}>

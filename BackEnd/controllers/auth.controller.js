@@ -63,19 +63,60 @@ export const signIn = async (
     }
     const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET);
 
-    const { passwords, ...others } = user._doc;
+    const { passwords, ...data } = user._doc;
     res.cookie('access_token', token, {
       httpOnly: true,
     });
     const response = res.status(200).json({
       status: 'success',
-      data: { others, token },
+      data: data,
     });
     return response;
   } catch (err) {
     const response = res.status(500).json({
       status: 'fail',
       message: err.message,
+    });
+    return response;
+  }
+};
+
+export const googleAuth = async (
+  /** @type import('express').Request */ req,
+  /** @type import('express').Response */ res,
+) => {
+  const { email } = req.body;
+  try {
+    const user = await User.findOne({ email });
+    if (user) {
+      const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET);
+      res.cookie('access_token', token, {
+        httpOnly: true,
+      });
+      const response = res.status(200).json({
+        status: 'success',
+        data: user._doc,
+      });
+      return response;
+    }
+    const newUser = User({
+      ...req.body,
+      fromGoogle: true,
+    });
+    const savedUser = await newUser.save();
+    const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET);
+    res.cookie('access_token', token, {
+      httpOnly: true,
+    });
+    const response = res.status(200).json({
+      status: 'success',
+      data: savedUser._doc,
+    });
+    return response;
+  } catch (error) {
+    const response = res.status(500).json({
+      status: 'fail',
+      message: error.message,
     });
     return response;
   }
