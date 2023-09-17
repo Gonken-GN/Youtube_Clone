@@ -19,7 +19,7 @@ import {
   like,
 } from "../redux/videoSlice";
 import { format } from "timeago.js";
-import { subscribe } from "../../../BackEnd/controllers/user.controller";
+import { subscription } from "../redux/userSlice";
 
 const Container = styled.div`
   display: flex;
@@ -166,18 +166,18 @@ const Video = () => {
   };
 
   const handleSub = async () => {
-    currentUser.subscribedUsers.includes(channel._id)
+    currentUser.subscribedUsers?.includes(channel._id)
       ? await axios.put(
           `http://localhost:5000/users/unsubscribe/${channel._id}`
         )
       : await axios.put(`http://localhost:5000/users/subscribe/${channel._id}`);
-    dispatch(subscribe(channel._id));
+    dispatch(subscription(channel._id));
   };
   return (
     <Container>
       <Content>
         <VideoWrapper>
-          <VideoFrame src={currentVideo.videoUrl} />
+          <VideoFrame src={currentVideo.videoUrl} controls />
         </VideoWrapper>
         <Title></Title>
         <Details>

@@ -2,6 +2,7 @@ import jwt from 'jsonwebtoken';
 
 import * as dotenv from 'dotenv';
 
+dotenv.config();
 // eslint-disable-next-line consistent-return
 // eslint-disable-next-line import/prefer-default-export
 export const verifyToken = (
@@ -11,6 +12,7 @@ export const verifyToken = (
   // eslint-disable-next-line consistent-return
 ) => {
   const token = req.cookies.access_token;
+  console.log(token);
   if (!token) {
     const response = res.status(401).json({
       status: 'fail',

@@ -40,44 +40,51 @@ export const signUp = async (
 };
 
 export const signIn = async (
-  /** @type import('express').Request */ req,
-  /** @type import('express').Response */ res,
+  /** @type {import('express').Request} */ req,
+  /** @type {import('express').Response} */ res,
+  next,
 ) => {
   const { name, password } = req.body;
+
   try {
     const user = await User.findOne({ name });
+
     if (!user) {
-      const response = res.status(401).json({
+      return res.status(401).json({
         status: 'fail',
         message: 'User not found',
       });
-      return response;
     }
+
     const isCorrect = await bcrypt.compare(password, user.password);
+
     if (!isCorrect) {
-      const response = res.status(500).json({
+      return res.status(401).json({
         status: 'fail',
         message: 'Wrong password',
       });
-      return response;
     }
+
     const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET);
 
-    const { passwords, ...data } = user._doc;
+    // Remove sensitive data before sending back to the client
+    const { password: _, ...data } = user._doc;
+
+    // Setting the cookie
     res.cookie('access_token', token, {
       httpOnly: true,
+      secure: process.env.NODE_ENV === 'production', // Only set to true if using HTTPS
+      sameSite: 'strict', // Optional
     });
-    const response = res.status(200).json({
+
+    return res.status(200).json({
       status: 'success',
-      data: data,
+      data,
     });
-    return response;
   } catch (err) {
-    const response = res.status(500).json({
-      status: 'fail',
-      message: err.message,
-    });
-    return response;
+    next(err); // Forward the error to the error-handling middleware
+
+    // Don't send another response here, as next(err) should be handled by a subsequent error-handling middleware
   }
 };
 

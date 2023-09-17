@@ -44,7 +44,7 @@ const Comment = ({comment}) => {
           John Doe <Date>1 day ago</Date>
         </Name>
         <Text>
-          {comment.desc}
+          {comment?.desc}
         </Text>
       </Details>
     </Container>
