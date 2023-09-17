@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import AccountCircleOutlinedIcon from "@mui/icons-material/AccountCircleOutlined";
 import SearchOutlinedIcon from "@mui/icons-material/SearchOutlined";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import VideoCallIcon from "@mui/icons-material/VideoCall";
 import { current } from "@reduxjs/toolkit";
@@ -76,18 +76,23 @@ const Avatar = styled.img`
 
 const Navbar = () => {
   const [open, setOpen] = useState(false);
+  const [q, setQ] = useState("");
+  const navigate = useNavigate();
   const { currentUser } = useSelector((state) => state.user);
   const dispatch = useDispatch();
   const hanndleLogOut = async () => {
     dispatch(logout());
-  }
+  };
   return (
     <>
       <Container>
         <Wrapper>
           <Search>
-            <Input placeholder="Search" />
-            <SearchOutlinedIcon />
+            <Input
+              placeholder="Search"
+              onChange={(e) => setQ(e.target.value)}
+            />
+            <SearchOutlinedIcon onClick={() => navigate(`search?q=${q}`)}/>
           </Search>
           {currentUser ? (
             <User>
@@ -95,7 +100,7 @@ const Navbar = () => {
               <Avatar src={currentUser.data.img} />
               {currentUser.data.name}
               <Button onClick={hanndleLogOut}>
-                <AccountCircleOutlinedIcon style={{}}/>
+                <AccountCircleOutlinedIcon style={{}} />
                 Log Out
               </Button>
             </User>

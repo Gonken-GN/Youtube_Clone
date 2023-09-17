@@ -20,6 +20,7 @@ import {
 } from "../redux/videoSlice";
 import { format } from "timeago.js";
 import { subscription } from "../redux/userSlice";
+import Recommendation from "../components/Recommendation";
 
 const Container = styled.div`
   display: flex;
@@ -67,9 +68,7 @@ const Hr = styled.hr`
   border: 0.5px solid ${({ theme }) => theme.soft};
 `;
 
-const Recommendation = styled.div`
-  flex: 2;
-`;
+
 const Channel = styled.div`
   display: flex;
   justify-content: space-between;
@@ -153,14 +152,14 @@ const Video = () => {
   const handleLike = async () => {
     console.log(currentUser.data);
     await axios
-      .put(`http://localhost:5000/users/like/${currentUser.data._id}`)
+      .put(`http://localhost:5000/users/like/${currentUser.data._id}`, 'dummy', { withCredentials: true })
       .then((res) => console.log(res.data));
     dispatch(like(currentUser.data._id));
   };
 
   const handleDislike = async () => {
     await axios.put(
-      `http://localhost:5000/users/dislike/${currentUser.data._id}`
+      `http://localhost:5000/users/dislike/${currentUser.data._id}`, 'dummy', { withCredentials: true }
     );
     dispatch(dislike(currentUser.data._id));
   };
@@ -168,16 +167,16 @@ const Video = () => {
   const handleSub = async () => {
     currentUser.subscribedUsers?.includes(channel._id)
       ? await axios.put(
-          `http://localhost:5000/users/unsubscribe/${channel._id}`
+          `http://localhost:5000/users/unsubscribe/${channel._id}`, 'dummy', { withCredentials: true }
         )
-      : await axios.put(`http://localhost:5000/users/subscribe/${channel._id}`);
+      : await axios.put(`http://localhost:5000/users/subscribe/${channel._id}`, 'dummy', { withCredentials: true });
     dispatch(subscription(channel._id));
   };
   return (
     <Container>
       <Content>
         <VideoWrapper>
-          <VideoFrame src={currentVideo.videoUrl} controls />
+          <VideoFrame src={currentVideo?.videoUrl} />
         </VideoWrapper>
         <Title></Title>
         <Details>
@@ -186,7 +185,7 @@ const Video = () => {
           </Info>
           <Buttons>
             <Button onClick={handleLike}>
-              {currentVideo?.likes?.includes(currentUser._id) ? (
+              {currentVideo?.likes?.includes(currentUser?._id) ? (
                 <ThumbUp />
               ) : (
                 <ThumbUpOutlinedIcon />
@@ -194,7 +193,7 @@ const Video = () => {
               {currentVideo?.likes?.length}
             </Button>
             <Button onClick={handleDislike}>
-              {currentVideo?.dislikes?.includes(currentUser._id) ? (
+              {currentVideo?.dislikes?.includes(currentUser?._id) ? (
                 <ThumbDown />
               ) : (
                 <ThumbDownOffAltOutlinedIcon />
@@ -226,23 +225,9 @@ const Video = () => {
           </Subscribe>
         </Channel>
         <Hr />
-        <Comments videoId={currentVideo._id} />
+        <Comments videoId={currentVideo?._id} />
       </Content>
-      {/* <Recommendation>
-        <Card type="sm"/>
-        <Card type="sm"/>
-        <Card type="sm"/>
-        <Card type="sm"/>
-        <Card type="sm"/>
-        <Card type="sm"/>
-        <Card type="sm"/>
-        <Card type="sm"/>
-        <Card type="sm"/>
-        <Card type="sm"/>
-        <Card type="sm"/>
-        <Card type="sm"/>
-        <Card type="sm"/>
-      </Recommendation> */}
+      <Recommendation tags={currentVideo.tags}/>
     </Container>
   );
 };

@@ -81,7 +81,9 @@ const SignIn = () => {
         name,
         password,
       };
-      const res = await axios.post("http://localhost:5000/auth/signin", login);
+      const res = await axios.post("http://localhost:5000/auth/signin", login, {
+        withCredentials: true,
+      });
       dispatch(loginSuccess(res.data));
     } catch (error) {
       dispatch(loginFailure());
@@ -93,11 +95,15 @@ const SignIn = () => {
       .then((result) => {
         console.log(result);
         axios
-          .post("http://localhost:5000/auth/google", {
-            name: result.user.displayName,
-            email: result.user.email,
-            img: result.user.photoURL,
-          })
+          .post(
+            "http://localhost:5000/auth/google",
+            {
+              name: result.user.displayName,
+              email: result.user.email,
+              img: result.user.photoURL,
+            },
+            { withCredentials: true }
+          )
           .then((res) => {
             console.log(res.data);
             dispatch(loginSuccess(res.data));

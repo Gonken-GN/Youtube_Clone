@@ -73,10 +73,9 @@ export const signIn = async (
     // Setting the cookie
     res.cookie('access_token', token, {
       httpOnly: true,
-      secure: process.env.NODE_ENV === 'production', // Only set to true if using HTTPS
+      // secure: process.env.NODE_ENV === 'production', // Only set to true if using HTTPS
       sameSite: 'strict', // Optional
     });
-
     return res.status(200).json({
       status: 'success',
       data,

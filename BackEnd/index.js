@@ -21,10 +21,13 @@ import commentRouter from './routes/comment.routes.js';
 const init = () => {
   // setting up the server
   const server = express();
+  server.use(cors({
+    credentials: true,
+    origin: 'http://localhost:3000',
+  }));
   server.use(cookieParser());
   server.use(bodyParser.json({ limit: '10mb', extended: true }));
   server.use(bodyParser.urlencoded({ limit: '10mb', extended: true }));
-  server.use(cors());
   // register the routes
   server.use('/auth', authRouter);
   server.use('/users', userRouter);
